@@ -1,0 +1,17 @@
+{
+  "name": "generative-art",
+  "version": "1.0.0",
+  "description": "A JavaScript implementation of the Open Read-Later specification",
+  "main": "build/open-read-later.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "Jeremy Dormitzer <jeremy.dormitzer@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-loader": "^2.3.2",
+    "typescript": "^2.4.2",
+    "webpack": "^3.4.1"
+  }
+}
