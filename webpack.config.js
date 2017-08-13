@@ -3,10 +3,8 @@ const path = require('path');
 module.exports = {
     entry: './src/index.ts',
     output: {
-        filename: 'open-read-later.js',
-        path: path.join(__dirname, 'build'),
-        library: 'openReadLater',
-        libraryTarget: 'umd'
+        filename: 'bundle.js',
+        path: path.join(__dirname, 'build')
     },
     resolve: {
         extensions: ['.ts', '.js', '.json']
