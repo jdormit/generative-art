@@ -1,8 +1,7 @@
 {
   "name": "generative-art",
   "version": "1.0.0",
-  "description": "A JavaScript implementation of the Open Read-Later specification",
-  "main": "build/open-read-later.js",
+  "description": "Algorithmic Art",
   "scripts": {
     "build": "webpack"
   },
@@ -16,6 +15,7 @@
     "webpack": "^3.4.1"
   },
   "dependencies": {
+    "gaussian": "^1.1.0",
     "seedrandom": "^2.4.3"
   }
 }
