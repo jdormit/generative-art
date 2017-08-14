@@ -9,6 +9,7 @@
   "author": "Jeremy Dormitzer <jeremy.dormitzer@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/gaussian": "^1.1.1",
     "@types/seedrandom": "^2.4.27",
     "ts-loader": "^2.3.2",
     "typescript": "^2.4.2",
