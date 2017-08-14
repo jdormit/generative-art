@@ -1,5 +1,5 @@
 import * as seedrandom from 'seedrandom';
-import * as guassian from 'gaussian';
+import * as gaussian from 'gaussian';
 
 const canvas = <HTMLCanvasElement> document.getElementById('canvas')!
 const ctx: CanvasRenderingContext2D = canvas.getContext('2d')!;
