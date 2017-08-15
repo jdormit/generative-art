@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -113,80 +113,6 @@ module.exports = __webpack_amd_options__;
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var seedrandom = __webpack_require__(4);
-var gaussian = __webpack_require__(13);
-var INITIAL_TITLE = "Generative 1";
-var $title = document.getElementById('title');
-$title.innerHTML = "";
-$title.appendChild(document.createTextNode(INITIAL_TITLE));
-var canvas = document.getElementById('canvas');
-if (!canvas.getContext) {
-    throw new Error("This browser does not support the HTML5 Canvas API");
-}
-var boxes = function (config) {
-    var canvas = config.canvas, rng = config.rng, numDist = config.numDist, xDist = config.xDist, yDist = config.yDist, widthDist = config.widthDist, heightDist = config.heightDist, redDist = config.redDist, greenDist = config.greenDist, blueDist = config.blueDist;
-    var ctx = canvas.getContext('2d');
-    var numBoxes = numDist.ppf(rng());
-    for (var i = 0; i < numBoxes; i++) {
-        var red = redDist.ppf(rng());
-        var green = greenDist.ppf(rng());
-        var blue = blueDist.ppf(rng());
-        var x = xDist.ppf(rng());
-        var y = yDist.ppf(rng());
-        var width = widthDist.ppf(rng());
-        var height = heightDist.ppf(rng());
-        ctx.fillStyle = "rgba(" + red + "," + green + "," + blue + ",.5)";
-        ctx.fillRect(x, y, width, height);
-    }
-};
-var lines = function (canvas, rng, num) {
-    clearCanvas(canvas);
-    var ctx = canvas.getContext('2d');
-    var xDist = gaussian(canvas.width / 2, canvas.width * 25);
-    for (var i = 0; i < num; i++) {
-        ctx.fillStyle = 'black';
-        ctx.fillRect(xDist.ppf(rng()), 0, 1, canvas.height);
-    }
-};
-var clearCanvas = function (canvas) {
-    var ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-};
-var box_clusters = function (rng, canvas) {
-    var numClusters = gaussian(3, 4).ppf(rng());
-    for (var i = 0; i < numClusters; i++) {
-        var boxesConfig = {
-            canvas: canvas,
-            rng: rng,
-            numDist: gaussian(16, 64),
-            xDist: gaussian(canvas.width / numClusters * i, numClusters * numClusters * 200),
-            yDist: gaussian(canvas.height / i, canvas.height * 32),
-            widthDist: gaussian(64, 128),
-            heightDist: gaussian(128, 256),
-            redDist: gaussian(128, 128 * i + 1),
-            greenDist: gaussian(128, 128),
-            blueDist: gaussian(128, 128)
-        };
-        boxes(boxesConfig);
-    }
-};
-var render = function (canvas) {
-    clearCanvas(canvas);
-    var title = $title.textContent ? $title.textContent.trim() : undefined;
-    var rng = seedrandom(title);
-    box_clusters(rng, canvas);
-};
-render(canvas);
-$title.addEventListener('input', function () { return render(canvas); });
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -199,17 +125,17 @@ $title.addEventListener('input', function () { return render(canvas); });
 // alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
 // Period: ~2^116
 // Reported to pass all BigCrush tests.
-var alea = __webpack_require__(5);
+var alea = __webpack_require__(6);
 
 // xor128, a pure xor-shift generator by George Marsaglia.
 // Period: 2^128-1.
 // Reported to fail: MatrixRank and LinearComp.
-var xor128 = __webpack_require__(6);
+var xor128 = __webpack_require__(7);
 
 // xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
 // Period: 2^192-2^32
 // Reported to fail: CollisionOver, SimpPoker, and LinearComp.
-var xorwow = __webpack_require__(7);
+var xorwow = __webpack_require__(8);
 
 // xorshift7, by François Panneton and Pierre L'ecuyer, takes
 // a different approach: it adds robustness by allowing more shifts
@@ -217,7 +143,7 @@ var xorwow = __webpack_require__(7);
 // with 256 bits, that passes BigCrush with no systmatic failures.
 // Period 2^256-1.
 // No systematic BigCrush failures reported.
-var xorshift7 = __webpack_require__(8);
+var xorshift7 = __webpack_require__(9);
 
 // xor4096, by Richard Brent, is a 4096-bit xor-shift with a
 // very long period that also adds a Weyl generator. It also passes
@@ -226,18 +152,18 @@ var xorshift7 = __webpack_require__(8);
 // collisions.
 // Period: 2^4128-2^32.
 // No systematic BigCrush failures reported.
-var xor4096 = __webpack_require__(9);
+var xor4096 = __webpack_require__(10);
 
 // Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
 // number generator derived from ChaCha, a modern stream cipher.
 // https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
 // Period: ~2^127
 // No systematic BigCrush failures reported.
-var tychei = __webpack_require__(10);
+var tychei = __webpack_require__(11);
 
 // The original ARC4-based prng included in this library.
 // Period: ~2^1600
-var sr = __webpack_require__(11);
+var sr = __webpack_require__(12);
 
 sr.alea = alea;
 sr.xor128 = xor128;
@@ -250,7 +176,67 @@ module.exports = sr;
 
 
 /***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function isGaussian(arg) {
+    return (arg.mean && typeof arg.mean === 'number' &&
+        arg.variance && typeof arg.variance === 'number' &&
+        arg.standardDeviation && typeof arg.standardDeviation === 'number' &&
+        arg.pdf && typeof arg.pdf === 'function' &&
+        arg.cdf && typeof arg.cdf === 'function' &&
+        arg.ppf && typeof arg.ppf === 'function' &&
+        arg.mul && typeof arg.mul === 'function' &&
+        arg.div && typeof arg.div === 'function' &&
+        arg.add && typeof arg.add === 'function' &&
+        arg.sub && typeof arg.sub === 'function' &&
+        arg.scale && typeof arg.scale === 'function');
+}
+exports.isGaussian = isGaussian;
+
+
+/***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var seedrandom = __webpack_require__(3);
+var layers = __webpack_require__(14);
+var drawing_1 = __webpack_require__(17);
+var canvas = document.getElementById('canvas');
+if (!canvas.getContext) {
+    throw new Error("This browser does not support the HTML5 Canvas API");
+}
+if (Object.keys(layers).length === 0) {
+    throw new Error("No layers found");
+}
+var ctx = canvas.getContext('2d');
+var layer = layers[Object.keys(layers)[0]];
+var $title = document.getElementById('title');
+$title.innerHTML = "";
+$title.appendChild(document.createTextNode(layer.title));
+var render = function (ctx, layer) {
+    var layers = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        layers[_i - 2] = arguments[_i];
+    }
+    var title = $title.textContent ? $title.textContent.trim() : undefined;
+    var rng = seedrandom(title);
+    drawing_1.clear(ctx);
+    layer.render(rng, ctx);
+    layers.forEach(function (layer) { return layer.render(rng, ctx); });
+};
+render(ctx, layer);
+$title.addEventListener('input', function () { return render(ctx, layer); });
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
@@ -372,7 +358,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xor128" prng algorithm by
@@ -461,7 +447,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorwow" prng algorithm by
@@ -555,7 +541,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorshift7" algorithm by
@@ -660,7 +646,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
@@ -814,7 +800,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "Tyche-i" prng algorithm by
@@ -925,7 +911,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -1164,7 +1150,7 @@ if ((typeof module) == 'object' && module.exports) {
   module.exports = seedrandom;
   // When in node.js, try using crypto package for autoseeding.
   try {
-    nodecrypto = __webpack_require__(12);
+    nodecrypto = __webpack_require__(13);
   } catch (ex) {}
 } else if (true) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return seedrandom; }.call(exports, __webpack_require__, exports, module),
@@ -1179,13 +1165,63 @@ if ((typeof module) == 'object' && module.exports) {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 13 */
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(15));
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var gaussian = __webpack_require__(16);
+var drawing_1 = __webpack_require__(17);
+var TITLE = 'Scatter';
+var NUM_CLUSTERS = gaussian(7, 4);
+var NUM_RECTS = gaussian(50, 25);
+var WIDTH = gaussian(35, 25);
+var HEIGHT = gaussian(50, 72);
+var GREEN = gaussian(128, 256);
+var BLUE = gaussian(128, 256);
+var ALPHA = gaussian(0.5, 0.25);
+exports.boxClusters = {
+    title: TITLE,
+    render: function (rng, ctx) {
+        if (ctx.canvas == null) {
+            return;
+        }
+        var numClusters = NUM_CLUSTERS.ppf(rng());
+        for (var i = 0; i < numClusters; i++) {
+            drawing_1.fillRgba(ctx, gaussian((255 / (numClusters + 1) * (i + 1)), 128), GREEN, BLUE, ALPHA, rng);
+            var numRects = NUM_RECTS.ppf(rng());
+            var x = gaussian(ctx.canvas.width / 2 * (i), 10000);
+            var y = gaussian(ctx.canvas.height / 2, 10000);
+            for (var j = 0; j < numRects; j++) {
+                drawing_1.box(ctx, x, y, WIDTH, HEIGHT, rng);
+            }
+        }
+    }
+};
+
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(exports) {
@@ -1301,6 +1337,90 @@ if ((typeof module) == 'object' && module.exports) {
 ( true
     ? function(e) { module.exports = e; }
     : function(e) { this["gaussian"] = e; });
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(18));
+__export(__webpack_require__(19));
+__export(__webpack_require__(20));
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var seedrandom = __webpack_require__(3);
+var util_1 = __webpack_require__(4);
+exports.box = function (ctx, x, y, width, height, rng) {
+    if (rng === void 0) { rng = seedrandom(); }
+    if (util_1.isGaussian(x)) {
+        x = x.ppf(rng());
+    }
+    if (util_1.isGaussian(y)) {
+        y = y.ppf(rng());
+    }
+    if (util_1.isGaussian(width)) {
+        width = width.ppf(rng());
+    }
+    if (util_1.isGaussian(height)) {
+        height = height.ppf(rng());
+    }
+    ctx.fillRect(x, y, width, height);
+};
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var seedrandom = __webpack_require__(3);
+var util_1 = __webpack_require__(4);
+exports.fillRgba = function (ctx, red, green, blue, alpha, rng) {
+    if (alpha === void 0) { alpha = 1; }
+    if (rng === void 0) { rng = seedrandom(); }
+    if (util_1.isGaussian(red)) {
+        red = red.ppf(rng());
+    }
+    if (util_1.isGaussian(green)) {
+        green = green.ppf(rng());
+    }
+    if (util_1.isGaussian(blue)) {
+        blue = blue.ppf(rng());
+    }
+    if (util_1.isGaussian(alpha)) {
+        alpha = alpha.ppf(rng());
+    }
+    ctx.fillStyle = "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+};
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.clear = function (ctx) {
+    if (ctx.canvas != null) {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+};
 
 
 /***/ })
