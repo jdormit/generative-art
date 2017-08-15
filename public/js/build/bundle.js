@@ -118,24 +118,18 @@ module.exports = __webpack_amd_options__;
 Object.defineProperty(exports, "__esModule", { value: true });
 var seedrandom = __webpack_require__(4);
 var gaussian = __webpack_require__(13);
-var SEED = "Nicole";
-var rng = seedrandom(SEED);
+var INITIAL_TITLE = "Generative 1";
+var $title = document.getElementById('title');
+$title.innerHTML = "";
+$title.appendChild(document.createTextNode(INITIAL_TITLE));
 var canvas = document.getElementById('canvas');
 if (!canvas.getContext) {
     throw new Error("This browser does not support the HTML5 Canvas API");
 }
-var boxes = function (canvas, meanNumBoxes, meanWidth, meanHeight, meanRed, meanGreen, meanBlue) {
-    clearCanvas(canvas);
+var boxes = function (config) {
+    var canvas = config.canvas, rng = config.rng, numDist = config.numDist, xDist = config.xDist, yDist = config.yDist, widthDist = config.widthDist, heightDist = config.heightDist, redDist = config.redDist, greenDist = config.greenDist, blueDist = config.blueDist;
     var ctx = canvas.getContext('2d');
-    var numBoxesDist = gaussian(meanNumBoxes, meanNumBoxes * 2);
-    var xDist = gaussian(canvas.width / 2, canvas.width * 50);
-    var yDist = gaussian(canvas.height / 2, canvas.height * 50);
-    var widthDist = gaussian(meanWidth, meanWidth * 10);
-    var heightDist = gaussian(meanHeight, meanHeight * 10);
-    var redDist = gaussian(meanRed, meanRed * 20);
-    var greenDist = gaussian(meanGreen, meanGreen * 20);
-    var blueDist = gaussian(meanBlue, meanBlue * 20);
-    var numBoxes = numBoxesDist.ppf(rng());
+    var numBoxes = numDist.ppf(rng());
     for (var i = 0; i < numBoxes; i++) {
         var red = redDist.ppf(rng());
         var green = greenDist.ppf(rng());
@@ -144,12 +138,11 @@ var boxes = function (canvas, meanNumBoxes, meanWidth, meanHeight, meanRed, mean
         var y = yDist.ppf(rng());
         var width = widthDist.ppf(rng());
         var height = heightDist.ppf(rng());
-        console.log("Drawing rectangle at " + x + ", " + y + " with width " + width + " and height " + height);
         ctx.fillStyle = "rgba(" + red + "," + green + "," + blue + ",.5)";
         ctx.fillRect(x, y, width, height);
     }
 };
-var lines = function (canvas, num) {
+var lines = function (canvas, rng, num) {
     clearCanvas(canvas);
     var ctx = canvas.getContext('2d');
     var xDist = gaussian(canvas.width / 2, canvas.width * 25);
@@ -162,7 +155,32 @@ var clearCanvas = function (canvas) {
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 };
-boxes(canvas, 100, 50, 100, 150, 10, 10);
+var box_clusters = function (rng, canvas) {
+    var numClusters = gaussian(3, 4).ppf(rng());
+    for (var i = 0; i < numClusters; i++) {
+        var boxesConfig = {
+            canvas: canvas,
+            rng: rng,
+            numDist: gaussian(16, 64),
+            xDist: gaussian(canvas.width / numClusters * i, numClusters * numClusters * 200),
+            yDist: gaussian(canvas.height / i, canvas.height * 32),
+            widthDist: gaussian(64, 128),
+            heightDist: gaussian(128, 256),
+            redDist: gaussian(128, 128 * i + 1),
+            greenDist: gaussian(128, 128),
+            blueDist: gaussian(128, 128)
+        };
+        boxes(boxesConfig);
+    }
+};
+var render = function (canvas) {
+    clearCanvas(canvas);
+    var title = $title.textContent ? $title.textContent.trim() : undefined;
+    var rng = seedrandom(title);
+    box_clusters(rng, canvas);
+};
+render(canvas);
+$title.addEventListener('input', function () { return render(canvas); });
 
 
 /***/ }),
