@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Algorithmic Art",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "dev": "webpack --watch"
   },
   "keywords": [],
   "author": "Jeremy Dormitzer <jeremy.dormitzer@gmail.com>",
