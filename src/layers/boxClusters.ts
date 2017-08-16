@@ -1,5 +1,6 @@
 import * as gaussian from 'gaussian';
 import { box, fillRgba } from '../drawing';
+import { scaledGaussian } from '../util';
 import { Layer } from '.';
 
 const TITLE = 'Scatter';
@@ -19,11 +20,11 @@ export const boxClusters: Layer = {
         }
         const numClusters = NUM_CLUSTERS.ppf(rng());
         for (let i = 0; i < numClusters; i++) {
-            fillRgba(ctx, gaussian((255 / (numClusters + 1) * (i + 1)), 128), GREEN, BLUE, ALPHA, rng);
+            fillRgba(ctx, scaledGaussian(64 * (i + 1), 8, rng), GREEN, BLUE, ALPHA, rng);
             const numRects = NUM_RECTS.ppf(rng());
-            const x = gaussian(ctx.canvas.width / 2 * (i), 10000);
-            const y = gaussian(ctx.canvas.height / 2, 10000);
             for (let j = 0; j < numRects; j++) {
+                const x = scaledGaussian(ctx.canvas.width / numClusters * (i + 1), 150, rng);
+                const y = scaledGaussian(ctx.canvas.height / 2, 200, rng);
                 box(ctx, x, y, WIDTH, HEIGHT, rng);
             }
         }

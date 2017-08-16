@@ -181,22 +181,6 @@ module.exports = sr;
 
 "use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(18));
-__export(__webpack_require__(19));
-__export(__webpack_require__(20));
-__export(__webpack_require__(21));
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 Object.defineProperty(exports, "__esModule", { value: true });
 var seedrandom = __webpack_require__(3);
 var gaussian = __webpack_require__(6);
@@ -224,6 +208,22 @@ function scaledGaussian(mean, standardDeviation, rng) {
     return gaussian(0, Math.pow(standardDeviation, 2)).ppf(rng()) + mean;
 }
 exports.scaledGaussian = scaledGaussian;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(18));
+__export(__webpack_require__(19));
+__export(__webpack_require__(20));
+__export(__webpack_require__(21));
 
 
 /***/ }),
@@ -354,7 +354,7 @@ exports.scaledGaussian = scaledGaussian;
 Object.defineProperty(exports, "__esModule", { value: true });
 var seedrandom = __webpack_require__(3);
 var layers = __webpack_require__(16);
-var drawing_1 = __webpack_require__(4);
+var drawing_1 = __webpack_require__(5);
 var canvas = document.getElementById('canvas');
 if (!canvas.getContext) {
     throw new Error("This browser does not support the HTML5 Canvas API");
@@ -1339,7 +1339,8 @@ __export(__webpack_require__(22));
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var gaussian = __webpack_require__(6);
-var drawing_1 = __webpack_require__(4);
+var drawing_1 = __webpack_require__(5);
+var util_1 = __webpack_require__(4);
 var TITLE = 'Scatter';
 var NUM_CLUSTERS = gaussian(7, 4);
 var NUM_RECTS = gaussian(50, 25);
@@ -1356,11 +1357,11 @@ exports.boxClusters = {
         }
         var numClusters = NUM_CLUSTERS.ppf(rng());
         for (var i = 0; i < numClusters; i++) {
-            drawing_1.fillRgba(ctx, gaussian((255 / (numClusters + 1) * (i + 1)), 128), GREEN, BLUE, ALPHA, rng);
+            drawing_1.fillRgba(ctx, util_1.scaledGaussian(64 * (i + 1), 8, rng), GREEN, BLUE, ALPHA, rng);
             var numRects = NUM_RECTS.ppf(rng());
-            var x = gaussian(ctx.canvas.width / 2 * (i), 10000);
-            var y = gaussian(ctx.canvas.height / 2, 10000);
             for (var j = 0; j < numRects; j++) {
+                var x = util_1.scaledGaussian(ctx.canvas.width / numClusters * (i + 1), 150, rng);
+                var y = util_1.scaledGaussian(ctx.canvas.height / 2, 200, rng);
                 drawing_1.box(ctx, x, y, WIDTH, HEIGHT, rng);
             }
         }
@@ -1376,7 +1377,7 @@ exports.boxClusters = {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var seedrandom = __webpack_require__(3);
-var util_1 = __webpack_require__(5);
+var util_1 = __webpack_require__(4);
 exports.box = function (ctx, x, y, width, height, rng) {
     if (rng === void 0) { rng = seedrandom(); }
     if (util_1.isGaussian(x)) {
@@ -1403,7 +1404,7 @@ exports.box = function (ctx, x, y, width, height, rng) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var seedrandom = __webpack_require__(3);
-var util_1 = __webpack_require__(5);
+var util_1 = __webpack_require__(4);
 exports.fillRgba = function (ctx, red, green, blue, alpha, rng) {
     if (alpha === void 0) { alpha = 1; }
     if (rng === void 0) { rng = seedrandom(); }
@@ -1445,7 +1446,7 @@ exports.clear = function (ctx) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var seedrandom = __webpack_require__(3);
-var util_1 = __webpack_require__(5);
+var util_1 = __webpack_require__(4);
 exports.line = function (ctx, startX, startY, endX, endY, rng) {
     if (rng === void 0) { rng = seedrandom(); }
     if (util_1.isGaussian(startX)) {
@@ -1474,8 +1475,8 @@ exports.line = function (ctx, startX, startY, endX, endY, rng) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var drawing_1 = __webpack_require__(4);
-var util_1 = __webpack_require__(5);
+var drawing_1 = __webpack_require__(5);
+var util_1 = __webpack_require__(4);
 var TITLE = 'Lines';
 var NUM_LINES = 150;
 exports.lines = {
