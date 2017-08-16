@@ -4,3 +4,4 @@ export interface Layer {
 }
 
 export * from './boxClusters';
+export * from './lines';
