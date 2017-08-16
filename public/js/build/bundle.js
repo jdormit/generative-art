@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -125,17 +125,17 @@ module.exports = __webpack_amd_options__;
 // alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
 // Period: ~2^116
 // Reported to pass all BigCrush tests.
-var alea = __webpack_require__(6);
+var alea = __webpack_require__(8);
 
 // xor128, a pure xor-shift generator by George Marsaglia.
 // Period: 2^128-1.
 // Reported to fail: MatrixRank and LinearComp.
-var xor128 = __webpack_require__(7);
+var xor128 = __webpack_require__(9);
 
 // xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
 // Period: 2^192-2^32
 // Reported to fail: CollisionOver, SimpPoker, and LinearComp.
-var xorwow = __webpack_require__(8);
+var xorwow = __webpack_require__(10);
 
 // xorshift7, by François Panneton and Pierre L'ecuyer, takes
 // a different approach: it adds robustness by allowing more shifts
@@ -143,7 +143,7 @@ var xorwow = __webpack_require__(8);
 // with 256 bits, that passes BigCrush with no systmatic failures.
 // Period 2^256-1.
 // No systematic BigCrush failures reported.
-var xorshift7 = __webpack_require__(9);
+var xorshift7 = __webpack_require__(11);
 
 // xor4096, by Richard Brent, is a 4096-bit xor-shift with a
 // very long period that also adds a Weyl generator. It also passes
@@ -152,18 +152,18 @@ var xorshift7 = __webpack_require__(9);
 // collisions.
 // Period: 2^4128-2^32.
 // No systematic BigCrush failures reported.
-var xor4096 = __webpack_require__(10);
+var xor4096 = __webpack_require__(12);
 
 // Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
 // number generator derived from ChaCha, a modern stream cipher.
 // https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
 // Period: ~2^127
 // No systematic BigCrush failures reported.
-var tychei = __webpack_require__(11);
+var tychei = __webpack_require__(13);
 
 // The original ARC4-based prng included in this library.
 // Period: ~2^1600
-var sr = __webpack_require__(12);
+var sr = __webpack_require__(14);
 
 sr.alea = alea;
 sr.xor128 = xor128;
@@ -181,7 +181,25 @@ module.exports = sr;
 
 "use strict";
 
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(18));
+__export(__webpack_require__(19));
+__export(__webpack_require__(20));
+__export(__webpack_require__(21));
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var seedrandom = __webpack_require__(3);
+var gaussian = __webpack_require__(6);
 function isGaussian(arg) {
     return (arg.mean && typeof arg.mean === 'number' &&
         arg.variance && typeof arg.variance === 'number' &&
@@ -196,18 +214,147 @@ function isGaussian(arg) {
         arg.scale && typeof arg.scale === 'function');
 }
 exports.isGaussian = isGaussian;
+function randomRange(min, max, rng) {
+    if (rng === void 0) { rng = seedrandom(); }
+    return rng() * (max - min) + min;
+}
+exports.randomRange = randomRange;
+function scaledGaussian(mean, standardDeviation, rng) {
+    if (rng === void 0) { rng = seedrandom(); }
+    return gaussian(0, Math.pow(standardDeviation, 2)).ppf(rng()) + mean;
+}
+exports.scaledGaussian = scaledGaussian;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function(exports) {
+
+  // Complementary error function
+  // From Numerical Recipes in C 2e p221
+  var erfc = function(x) {
+    var z = Math.abs(x);
+    var t = 1 / (1 + z / 2);
+    var r = t * Math.exp(-z * z - 1.26551223 + t * (1.00002368 +
+            t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 +
+            t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 +
+            t * (-0.82215223 + t * 0.17087277)))))))))
+    return x >= 0 ? r : 2 - r;
+  };
+
+  // Inverse complementary error function
+  // From Numerical Recipes 3e p265
+  var ierfc = function(x) {
+    if (x >= 2) { return -100; }
+    if (x <= 0) { return 100; }
+
+    var xx = (x < 1) ? x : 2 - x;
+    var t = Math.sqrt(-2 * Math.log(xx / 2));
+
+    var r = -0.70711 * ((2.30753 + t * 0.27061) /
+            (1 + t * (0.99229 + t * 0.04481)) - t);
+
+    for (var j = 0; j < 2; j++) {
+      var err = erfc(r) - xx;
+      r += err / (1.12837916709551257 * Math.exp(-(r * r)) - r * err);
+    }
+
+    return (x < 1) ? r : -r;
+  };
+
+  // Models the normal distribution
+  var Gaussian = function(mean, variance) {
+    if (variance <= 0) {
+      throw new Error('Variance must be > 0 (but was ' + variance + ')');
+    }
+    this.mean = mean;
+    this.variance = variance;
+    this.standardDeviation = Math.sqrt(variance);
+  }
+
+  // Probability density function
+  Gaussian.prototype.pdf = function(x) {
+    var m = this.standardDeviation * Math.sqrt(2 * Math.PI);
+    var e = Math.exp(-Math.pow(x - this.mean, 2) / (2 * this.variance));
+    return e / m;
+  };
+
+  // Cumulative density function
+  Gaussian.prototype.cdf = function(x) {
+    return 0.5 * erfc(-(x - this.mean) / (this.standardDeviation * Math.sqrt(2)));
+  };
+
+  // Percent point function
+  Gaussian.prototype.ppf = function(x) {
+    return this.mean - this.standardDeviation * Math.sqrt(2) * ierfc(2 * x);
+  };
+
+  // Product distribution of this and d (scale for constant)
+  Gaussian.prototype.mul = function(d) {
+    if (typeof(d) === "number") {
+      return this.scale(d);
+    }
+    var precision = 1 / this.variance;
+    var dprecision = 1 / d.variance;
+    return fromPrecisionMean(
+        precision + dprecision, 
+        precision * this.mean + dprecision * d.mean);
+  };
+
+  // Quotient distribution of this and d (scale for constant)
+  Gaussian.prototype.div = function(d) {
+    if (typeof(d) === "number") {
+      return this.scale(1 / d);
+    }
+    var precision = 1 / this.variance;
+    var dprecision = 1 / d.variance;
+    return fromPrecisionMean(
+        precision - dprecision, 
+        precision * this.mean - dprecision * d.mean);
+  };
+
+  // Addition of this and d
+  Gaussian.prototype.add = function(d) {
+    return gaussian(this.mean + d.mean, this.variance + d.variance);
+  };
+
+  // Subtraction of this and d
+  Gaussian.prototype.sub = function(d) {
+    return gaussian(this.mean - d.mean, this.variance + d.variance);
+  };
+
+  // Scale this by constant c
+  Gaussian.prototype.scale = function(c) {
+    return gaussian(this.mean * c, this.variance * c * c);
+  };
+
+  var gaussian = function(mean, variance) {
+    return new Gaussian(mean, variance);
+  };
+
+  var fromPrecisionMean = function(precision, precisionmean) {
+    return gaussian(precisionmean / precision, 1 / precision);
+  };
+
+  exports(gaussian);
+})
+( true
+    ? function(e) { module.exports = e; }
+    : function(e) { this["gaussian"] = e; });
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var seedrandom = __webpack_require__(3);
-var layers = __webpack_require__(14);
-var drawing_1 = __webpack_require__(17);
+var layers = __webpack_require__(16);
+var drawing_1 = __webpack_require__(4);
 var canvas = document.getElementById('canvas');
 if (!canvas.getContext) {
     throw new Error("This browser does not support the HTML5 Canvas API");
@@ -236,7 +383,7 @@ $title.addEventListener('input', function () { return render(ctx, layer); });
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
@@ -358,7 +505,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xor128" prng algorithm by
@@ -447,7 +594,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorwow" prng algorithm by
@@ -541,7 +688,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorshift7" algorithm by
@@ -646,7 +793,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
@@ -800,7 +947,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "Tyche-i" prng algorithm by
@@ -911,7 +1058,7 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -1150,7 +1297,7 @@ if ((typeof module) == 'object' && module.exports) {
   module.exports = seedrandom;
   // When in node.js, try using crypto package for autoseeding.
   try {
-    nodecrypto = __webpack_require__(13);
+    nodecrypto = __webpack_require__(15);
   } catch (ex) {}
 } else if (true) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return seedrandom; }.call(exports, __webpack_require__, exports, module),
@@ -1165,13 +1312,13 @@ if ((typeof module) == 'object' && module.exports) {
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1180,18 +1327,19 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(15));
+__export(__webpack_require__(17));
+__export(__webpack_require__(22));
 
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var gaussian = __webpack_require__(16);
-var drawing_1 = __webpack_require__(17);
+var gaussian = __webpack_require__(6);
+var drawing_1 = __webpack_require__(4);
 var TITLE = 'Scatter';
 var NUM_CLUSTERS = gaussian(7, 4);
 var NUM_RECTS = gaussian(50, 25);
@@ -1221,140 +1369,6 @@ exports.boxClusters = {
 
 
 /***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-(function(exports) {
-
-  // Complementary error function
-  // From Numerical Recipes in C 2e p221
-  var erfc = function(x) {
-    var z = Math.abs(x);
-    var t = 1 / (1 + z / 2);
-    var r = t * Math.exp(-z * z - 1.26551223 + t * (1.00002368 +
-            t * (0.37409196 + t * (0.09678418 + t * (-0.18628806 +
-            t * (0.27886807 + t * (-1.13520398 + t * (1.48851587 +
-            t * (-0.82215223 + t * 0.17087277)))))))))
-    return x >= 0 ? r : 2 - r;
-  };
-
-  // Inverse complementary error function
-  // From Numerical Recipes 3e p265
-  var ierfc = function(x) {
-    if (x >= 2) { return -100; }
-    if (x <= 0) { return 100; }
-
-    var xx = (x < 1) ? x : 2 - x;
-    var t = Math.sqrt(-2 * Math.log(xx / 2));
-
-    var r = -0.70711 * ((2.30753 + t * 0.27061) /
-            (1 + t * (0.99229 + t * 0.04481)) - t);
-
-    for (var j = 0; j < 2; j++) {
-      var err = erfc(r) - xx;
-      r += err / (1.12837916709551257 * Math.exp(-(r * r)) - r * err);
-    }
-
-    return (x < 1) ? r : -r;
-  };
-
-  // Models the normal distribution
-  var Gaussian = function(mean, variance) {
-    if (variance <= 0) {
-      throw new Error('Variance must be > 0 (but was ' + variance + ')');
-    }
-    this.mean = mean;
-    this.variance = variance;
-    this.standardDeviation = Math.sqrt(variance);
-  }
-
-  // Probability density function
-  Gaussian.prototype.pdf = function(x) {
-    var m = this.standardDeviation * Math.sqrt(2 * Math.PI);
-    var e = Math.exp(-Math.pow(x - this.mean, 2) / (2 * this.variance));
-    return e / m;
-  };
-
-  // Cumulative density function
-  Gaussian.prototype.cdf = function(x) {
-    return 0.5 * erfc(-(x - this.mean) / (this.standardDeviation * Math.sqrt(2)));
-  };
-
-  // Percent point function
-  Gaussian.prototype.ppf = function(x) {
-    return this.mean - this.standardDeviation * Math.sqrt(2) * ierfc(2 * x);
-  };
-
-  // Product distribution of this and d (scale for constant)
-  Gaussian.prototype.mul = function(d) {
-    if (typeof(d) === "number") {
-      return this.scale(d);
-    }
-    var precision = 1 / this.variance;
-    var dprecision = 1 / d.variance;
-    return fromPrecisionMean(
-        precision + dprecision, 
-        precision * this.mean + dprecision * d.mean);
-  };
-
-  // Quotient distribution of this and d (scale for constant)
-  Gaussian.prototype.div = function(d) {
-    if (typeof(d) === "number") {
-      return this.scale(1 / d);
-    }
-    var precision = 1 / this.variance;
-    var dprecision = 1 / d.variance;
-    return fromPrecisionMean(
-        precision - dprecision, 
-        precision * this.mean - dprecision * d.mean);
-  };
-
-  // Addition of this and d
-  Gaussian.prototype.add = function(d) {
-    return gaussian(this.mean + d.mean, this.variance + d.variance);
-  };
-
-  // Subtraction of this and d
-  Gaussian.prototype.sub = function(d) {
-    return gaussian(this.mean - d.mean, this.variance + d.variance);
-  };
-
-  // Scale this by constant c
-  Gaussian.prototype.scale = function(c) {
-    return gaussian(this.mean * c, this.variance * c * c);
-  };
-
-  var gaussian = function(mean, variance) {
-    return new Gaussian(mean, variance);
-  };
-
-  var fromPrecisionMean = function(precision, precisionmean) {
-    return gaussian(precisionmean / precision, 1 / precision);
-  };
-
-  exports(gaussian);
-})
-( true
-    ? function(e) { module.exports = e; }
-    : function(e) { this["gaussian"] = e; });
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(18));
-__export(__webpack_require__(19));
-__export(__webpack_require__(20));
-
-
-/***/ }),
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1362,7 +1376,7 @@ __export(__webpack_require__(20));
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var seedrandom = __webpack_require__(3);
-var util_1 = __webpack_require__(4);
+var util_1 = __webpack_require__(5);
 exports.box = function (ctx, x, y, width, height, rng) {
     if (rng === void 0) { rng = seedrandom(); }
     if (util_1.isGaussian(x)) {
@@ -1389,7 +1403,7 @@ exports.box = function (ctx, x, y, width, height, rng) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var seedrandom = __webpack_require__(3);
-var util_1 = __webpack_require__(4);
+var util_1 = __webpack_require__(5);
 exports.fillRgba = function (ctx, red, green, blue, alpha, rng) {
     if (alpha === void 0) { alpha = 1; }
     if (rng === void 0) { rng = seedrandom(); }
@@ -1419,6 +1433,62 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.clear = function (ctx) {
     if (ctx.canvas != null) {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+};
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var seedrandom = __webpack_require__(3);
+var util_1 = __webpack_require__(5);
+exports.line = function (ctx, startX, startY, endX, endY, rng) {
+    if (rng === void 0) { rng = seedrandom(); }
+    if (util_1.isGaussian(startX)) {
+        startX = startX.ppf(rng());
+    }
+    if (util_1.isGaussian(startY)) {
+        startY = startY.ppf(rng());
+    }
+    if (util_1.isGaussian(endX)) {
+        endX = endX.ppf(rng());
+    }
+    if (util_1.isGaussian(endY)) {
+        endY = endY.ppf(rng());
+    }
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+};
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var drawing_1 = __webpack_require__(4);
+var util_1 = __webpack_require__(5);
+var TITLE = 'Lines';
+var NUM_LINES = 150;
+exports.lines = {
+    title: TITLE,
+    render: function (rng, ctx) {
+        if (ctx.canvas == null) {
+            return;
+        }
+        for (var i = 0; i < NUM_LINES; i++) {
+            // const x = randomRange(0, ctx.canvas.width, rng);
+            var x = util_1.scaledGaussian(ctx.canvas.width / 2, ctx.canvas.width / 7, rng);
+            drawing_1.line(ctx, x, ctx.canvas.height, x, 0);
+        }
     }
 };
 
