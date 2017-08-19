@@ -1,5 +1,6 @@
 import { line } from '../drawing';
 import { randomRange, scaledGaussian } from '../util';
+
 import * as gaussian from 'gaussian';
 import { Layer } from '.';
 

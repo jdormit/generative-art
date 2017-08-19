@@ -60,11 +60,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
+/* 0 */,
+/* 1 */
 /***/ (function(module, exports) {
 
 module.exports = function() {
@@ -73,7 +74,75 @@ module.exports = function() {
 
 
 /***/ }),
-/* 1 */
+/* 2 */,
+/* 3 */,
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// A library of seedable RNGs implemented in Javascript.
+//
+// Usage:
+//
+// var seedrandom = require('seedrandom');
+// var random = seedrandom(1); // or any seed.
+// var x = random();       // 0 <= x < 1.  Every bit is random.
+// var x = random.quick(); // 0 <= x < 1.  32 bits of randomness.
+
+// alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
+// Period: ~2^116
+// Reported to pass all BigCrush tests.
+var alea = __webpack_require__(44);
+
+// xor128, a pure xor-shift generator by George Marsaglia.
+// Period: 2^128-1.
+// Reported to fail: MatrixRank and LinearComp.
+var xor128 = __webpack_require__(45);
+
+// xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
+// Period: 2^192-2^32
+// Reported to fail: CollisionOver, SimpPoker, and LinearComp.
+var xorwow = __webpack_require__(46);
+
+// xorshift7, by François Panneton and Pierre L'ecuyer, takes
+// a different approach: it adds robustness by allowing more shifts
+// than Marsaglia's original three.  It is a 7-shift generator
+// with 256 bits, that passes BigCrush with no systmatic failures.
+// Period 2^256-1.
+// No systematic BigCrush failures reported.
+var xorshift7 = __webpack_require__(47);
+
+// xor4096, by Richard Brent, is a 4096-bit xor-shift with a
+// very long period that also adds a Weyl generator. It also passes
+// BigCrush with no systematic failures.  Its long period may
+// be useful if you have many generators and need to avoid
+// collisions.
+// Period: 2^4128-2^32.
+// No systematic BigCrush failures reported.
+var xor4096 = __webpack_require__(48);
+
+// Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
+// number generator derived from ChaCha, a modern stream cipher.
+// https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
+// Period: ~2^127
+// No systematic BigCrush failures reported.
+var tychei = __webpack_require__(49);
+
+// The original ARC4-based prng included in this library.
+// Period: ~2^1600
+var sr = __webpack_require__(50);
+
+sr.alea = alea;
+sr.xor128 = xor128;
+sr.xorwow = xorwow;
+sr.xorshift7 = xorshift7;
+sr.xor4096 = xor4096;
+sr.tychei = tychei;
+
+module.exports = sr;
+
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -101,7 +170,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 2 */
+/* 6 */
 /***/ (function(module, exports) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
@@ -110,80 +179,15 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// A library of seedable RNGs implemented in Javascript.
-//
-// Usage:
-//
-// var seedrandom = require('seedrandom');
-// var random = seedrandom(1); // or any seed.
-// var x = random();       // 0 <= x < 1.  Every bit is random.
-// var x = random.quick(); // 0 <= x < 1.  32 bits of randomness.
-
-// alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
-// Period: ~2^116
-// Reported to pass all BigCrush tests.
-var alea = __webpack_require__(8);
-
-// xor128, a pure xor-shift generator by George Marsaglia.
-// Period: 2^128-1.
-// Reported to fail: MatrixRank and LinearComp.
-var xor128 = __webpack_require__(9);
-
-// xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
-// Period: 2^192-2^32
-// Reported to fail: CollisionOver, SimpPoker, and LinearComp.
-var xorwow = __webpack_require__(10);
-
-// xorshift7, by François Panneton and Pierre L'ecuyer, takes
-// a different approach: it adds robustness by allowing more shifts
-// than Marsaglia's original three.  It is a 7-shift generator
-// with 256 bits, that passes BigCrush with no systmatic failures.
-// Period 2^256-1.
-// No systematic BigCrush failures reported.
-var xorshift7 = __webpack_require__(11);
-
-// xor4096, by Richard Brent, is a 4096-bit xor-shift with a
-// very long period that also adds a Weyl generator. It also passes
-// BigCrush with no systematic failures.  Its long period may
-// be useful if you have many generators and need to avoid
-// collisions.
-// Period: 2^4128-2^32.
-// No systematic BigCrush failures reported.
-var xor4096 = __webpack_require__(12);
-
-// Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
-// number generator derived from ChaCha, a modern stream cipher.
-// https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
-// Period: ~2^127
-// No systematic BigCrush failures reported.
-var tychei = __webpack_require__(13);
-
-// The original ARC4-based prng included in this library.
-// Period: ~2^1600
-var sr = __webpack_require__(14);
-
-sr.alea = alea;
-sr.xor128 = xor128;
-sr.xorwow = xorwow;
-sr.xorshift7 = xorshift7;
-sr.xor4096 = xor4096;
-sr.tychei = tychei;
-
-module.exports = sr;
-
-
-/***/ }),
-/* 4 */
+/* 7 */,
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var seedrandom = __webpack_require__(3);
-var gaussian = __webpack_require__(6);
+var seedrandom = __webpack_require__(4);
+var gaussian = __webpack_require__(20);
 function isGaussian(arg) {
     return (arg.mean && typeof arg.mean === 'number' &&
         arg.variance && typeof arg.variance === 'number' &&
@@ -208,10 +212,40 @@ function scaledGaussian(mean, standardDeviation, rng) {
     return gaussian(0, Math.pow(standardDeviation, 2)).ppf(rng()) + mean;
 }
 exports.scaledGaussian = scaledGaussian;
+function validateWeightedChoices(choices) {
+    var invalidWeights = choices.reduce(function (acc, choice) { return choice[0] < 0 || choice[0] > 1; }, false);
+    var weightSum = choices.reduce(function (sum, choice) { return sum + choice[0]; }, 0);
+    if (Math.abs(weightSum - 1) > 0.00001) {
+        throw new Error("Weights must sum to 1");
+    }
+    else if (invalidWeights) {
+        throw new Error("Weights must be between 0 and 1");
+    }
+}
+function weightedChoice(choices, rng) {
+    if (rng === void 0) { rng = seedrandom(); }
+    validateWeightedChoices(choices);
+    var num = rng();
+    var weightDiff = 1;
+    var res = choices[0][1];
+    for (var _i = 0, choices_1 = choices; _i < choices_1.length; _i++) {
+        var choice = choices_1[_i];
+        if (Math.abs(choice[0] - num) < weightDiff) {
+            weightDiff = Math.abs(choice[0] - num);
+            res = choice[1];
+        }
+    }
+    return res;
+}
+exports.weightedChoice = weightedChoice;
 
 
 /***/ }),
-/* 5 */
+/* 9 */,
+/* 10 */,
+/* 11 */,
+/* 12 */,
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -220,14 +254,21 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(18));
-__export(__webpack_require__(19));
-__export(__webpack_require__(20));
-__export(__webpack_require__(21));
+__export(__webpack_require__(54));
+__export(__webpack_require__(55));
+__export(__webpack_require__(56));
+__export(__webpack_require__(57));
+__export(__webpack_require__(58));
 
 
 /***/ }),
-/* 6 */
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(exports) {
@@ -346,15 +387,37 @@ __export(__webpack_require__(21));
 
 
 /***/ }),
-/* 7 */
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var seedrandom = __webpack_require__(3);
-var layers = __webpack_require__(16);
-var drawing_1 = __webpack_require__(5);
+var seedrandom = __webpack_require__(4);
+var layers = __webpack_require__(52);
+var drawing_1 = __webpack_require__(13);
 var canvas = document.getElementById('canvas');
 if (!canvas.getContext) {
     throw new Error("This browser does not support the HTML5 Canvas API");
@@ -383,7 +446,7 @@ $title.addEventListener('input', function () { return render(ctx, layer); });
 
 
 /***/ }),
-/* 8 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
@@ -487,7 +550,7 @@ function Mash() {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(0) && __webpack_require__(2)) {
+} else if (__webpack_require__(1) && __webpack_require__(6)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -497,15 +560,15 @@ if (module && module.exports) {
 })(
   this,
   (typeof module) == 'object' && module,    // present in node.js
-  __webpack_require__(0)   // present with an AMD loader
+  __webpack_require__(1)   // present with an AMD loader
 );
 
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 9 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xor128" prng algorithm by
@@ -576,7 +639,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(0) && __webpack_require__(2)) {
+} else if (__webpack_require__(1) && __webpack_require__(6)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -586,15 +649,15 @@ if (module && module.exports) {
 })(
   this,
   (typeof module) == 'object' && module,    // present in node.js
-  __webpack_require__(0)   // present with an AMD loader
+  __webpack_require__(1)   // present with an AMD loader
 );
 
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 10 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorwow" prng algorithm by
@@ -670,7 +733,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(0) && __webpack_require__(2)) {
+} else if (__webpack_require__(1) && __webpack_require__(6)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -680,15 +743,15 @@ if (module && module.exports) {
 })(
   this,
   (typeof module) == 'object' && module,    // present in node.js
-  __webpack_require__(0)   // present with an AMD loader
+  __webpack_require__(1)   // present with an AMD loader
 );
 
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 11 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorshift7" algorithm by
@@ -776,7 +839,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(0) && __webpack_require__(2)) {
+} else if (__webpack_require__(1) && __webpack_require__(6)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -786,14 +849,14 @@ if (module && module.exports) {
 })(
   this,
   (typeof module) == 'object' && module,    // present in node.js
-  __webpack_require__(0)   // present with an AMD loader
+  __webpack_require__(1)   // present with an AMD loader
 );
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 12 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
@@ -931,7 +994,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(0) && __webpack_require__(2)) {
+} else if (__webpack_require__(1) && __webpack_require__(6)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -941,13 +1004,13 @@ if (module && module.exports) {
 })(
   this,                                     // window object or global
   (typeof module) == 'object' && module,    // present in node.js
-  __webpack_require__(0)   // present with an AMD loader
+  __webpack_require__(1)   // present with an AMD loader
 );
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 13 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "Tyche-i" prng algorithm by
@@ -1040,7 +1103,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(0) && __webpack_require__(2)) {
+} else if (__webpack_require__(1) && __webpack_require__(6)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -1050,15 +1113,15 @@ if (module && module.exports) {
 })(
   this,
   (typeof module) == 'object' && module,    // present in node.js
-  __webpack_require__(0)   // present with an AMD loader
+  __webpack_require__(1)   // present with an AMD loader
 );
 
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 14 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -1297,7 +1360,7 @@ if ((typeof module) == 'object' && module.exports) {
   module.exports = seedrandom;
   // When in node.js, try using crypto package for autoseeding.
   try {
-    nodecrypto = __webpack_require__(15);
+    nodecrypto = __webpack_require__(51);
   } catch (ex) {}
 } else if (true) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return seedrandom; }.call(exports, __webpack_require__, exports, module),
@@ -1312,13 +1375,13 @@ if ((typeof module) == 'object' && module.exports) {
 
 
 /***/ }),
-/* 15 */
+/* 51 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 16 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1327,27 +1390,27 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(17));
-__export(__webpack_require__(22));
+__export(__webpack_require__(53));
+__export(__webpack_require__(59));
 
 
 /***/ }),
-/* 17 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var gaussian = __webpack_require__(6);
-var drawing_1 = __webpack_require__(5);
-var util_1 = __webpack_require__(4);
+var gaussian = __webpack_require__(20);
+var drawing_1 = __webpack_require__(13);
+var util_1 = __webpack_require__(8);
 var TITLE = 'Scatter';
 var NUM_CLUSTERS = gaussian(7, 4);
 var NUM_RECTS = gaussian(50, 25);
 var WIDTH = gaussian(35, 25);
 var HEIGHT = gaussian(50, 72);
-var GREEN = gaussian(128, 256);
-var BLUE = gaussian(128, 256);
+var SATURATION = gaussian(75, 100);
+var LIGHTNESS = gaussian(50, 125);
 var ALPHA = gaussian(0.5, 0.25);
 exports.boxClusters = {
     title: TITLE,
@@ -1355,9 +1418,15 @@ exports.boxClusters = {
         if (ctx.canvas == null) {
             return;
         }
+        var colorWeights = [
+            [0.7, [360, 65, 45, 90]],
+            [0.2, [180, 45, 65, 75]],
+            [0.1, [220, 45, 65, 75]]
+        ];
         var numClusters = NUM_CLUSTERS.ppf(rng());
         for (var i = 0; i < numClusters; i++) {
-            drawing_1.fillRgba(ctx, util_1.scaledGaussian(64 * (i + 1), 8, rng), GREEN, BLUE, ALPHA, rng);
+            var color = util_1.weightedChoice(colorWeights, rng);
+            drawing_1.fillHsla(ctx, color[0], color[1], color[2], color[3], rng);
             var numRects = NUM_RECTS.ppf(rng());
             for (var j = 0; j < numRects; j++) {
                 var x = util_1.scaledGaussian(ctx.canvas.width / numClusters * (i + 1), 150, rng);
@@ -1370,14 +1439,14 @@ exports.boxClusters = {
 
 
 /***/ }),
-/* 18 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var seedrandom = __webpack_require__(3);
-var util_1 = __webpack_require__(4);
+var seedrandom = __webpack_require__(4);
+var util_1 = __webpack_require__(8);
 exports.box = function (ctx, x, y, width, height, rng) {
     if (rng === void 0) { rng = seedrandom(); }
     if (util_1.isGaussian(x)) {
@@ -1397,14 +1466,14 @@ exports.box = function (ctx, x, y, width, height, rng) {
 
 
 /***/ }),
-/* 19 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var seedrandom = __webpack_require__(3);
-var util_1 = __webpack_require__(4);
+var seedrandom = __webpack_require__(4);
+var util_1 = __webpack_require__(8);
 exports.fillRgba = function (ctx, red, green, blue, alpha, rng) {
     if (alpha === void 0) { alpha = 1; }
     if (rng === void 0) { rng = seedrandom(); }
@@ -1425,7 +1494,35 @@ exports.fillRgba = function (ctx, red, green, blue, alpha, rng) {
 
 
 /***/ }),
-/* 20 */
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var seedrandom = __webpack_require__(4);
+var util_1 = __webpack_require__(8);
+exports.fillHsla = function (ctx, hue, saturation, lightness, alpha, rng) {
+    if (alpha === void 0) { alpha = 1; }
+    if (rng === void 0) { rng = seedrandom(); }
+    if (util_1.isGaussian(hue)) {
+        hue = hue.ppf(rng());
+    }
+    if (util_1.isGaussian(saturation)) {
+        saturation = saturation.ppf(rng());
+    }
+    if (util_1.isGaussian(lightness)) {
+        lightness = lightness.ppf(rng());
+    }
+    if (util_1.isGaussian(alpha)) {
+        alpha = alpha.ppf(rng());
+    }
+    ctx.fillStyle = "hsla(" + hue + ", " + saturation + "%, " + lightness + "%, " + alpha + ")";
+};
+
+
+/***/ }),
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1439,14 +1536,14 @@ exports.clear = function (ctx) {
 
 
 /***/ }),
-/* 21 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var seedrandom = __webpack_require__(3);
-var util_1 = __webpack_require__(4);
+var seedrandom = __webpack_require__(4);
+var util_1 = __webpack_require__(8);
 exports.line = function (ctx, startX, startY, endX, endY, rng) {
     if (rng === void 0) { rng = seedrandom(); }
     if (util_1.isGaussian(startX)) {
@@ -1469,14 +1566,14 @@ exports.line = function (ctx, startX, startY, endX, endY, rng) {
 
 
 /***/ }),
-/* 22 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var drawing_1 = __webpack_require__(5);
-var util_1 = __webpack_require__(4);
+var drawing_1 = __webpack_require__(13);
+var util_1 = __webpack_require__(8);
 var TITLE = 'Lines';
 var NUM_LINES = 150;
 exports.lines = {
