@@ -43,13 +43,12 @@ function validateWeightedChoices<T>(choices: WeightedChoices<T>) {
 export function weightedChoice<T>(choices: WeightedChoices<T>, rng: seedrandom.prng = seedrandom()): T {
     validateWeightedChoices(choices);
     let num = rng();
-    let weightDiff = 1;
-    let res = choices[0][1];
     for (const choice of choices) {
-        if (Math.abs(choice[0] - num) < weightDiff) {
-            weightDiff = Math.abs(choice[0] - num);
-            res = choice[1];
+        if (num < choice[0]) {
+            return choice[1];
+        } else {
+            num -= choice[0];
         }
     }
-    return res;
+    throw new Error('Something went wrong choosing a weighted choice');
 }
