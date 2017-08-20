@@ -3,5 +3,5 @@ export interface Layer {
     render: (rng: seedrandom.prng, canvas: CanvasRenderingContext2D) => void;
 }
 
-export * from './boxClusters';
+export * from './autumn';
 export * from './lines';

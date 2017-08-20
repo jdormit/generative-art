@@ -63,9 +63,9 @@
 /******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */,
-/* 1 */
+/******/ ({
+
+/***/ 1:
 /***/ (function(module, exports) {
 
 module.exports = function() {
@@ -74,178 +74,50 @@ module.exports = function() {
 
 
 /***/ }),
-/* 2 */,
-/* 3 */,
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
 
-// A library of seedable RNGs implemented in Javascript.
-//
-// Usage:
-//
-// var seedrandom = require('seedrandom');
-// var random = seedrandom(1); // or any seed.
-// var x = random();       // 0 <= x < 1.  Every bit is random.
-// var x = random.quick(); // 0 <= x < 1.  32 bits of randomness.
-
-// alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
-// Period: ~2^116
-// Reported to pass all BigCrush tests.
-var alea = __webpack_require__(44);
-
-// xor128, a pure xor-shift generator by George Marsaglia.
-// Period: 2^128-1.
-// Reported to fail: MatrixRank and LinearComp.
-var xor128 = __webpack_require__(45);
-
-// xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
-// Period: 2^192-2^32
-// Reported to fail: CollisionOver, SimpPoker, and LinearComp.
-var xorwow = __webpack_require__(46);
-
-// xorshift7, by François Panneton and Pierre L'ecuyer, takes
-// a different approach: it adds robustness by allowing more shifts
-// than Marsaglia's original three.  It is a 7-shift generator
-// with 256 bits, that passes BigCrush with no systmatic failures.
-// Period 2^256-1.
-// No systematic BigCrush failures reported.
-var xorshift7 = __webpack_require__(47);
-
-// xor4096, by Richard Brent, is a 4096-bit xor-shift with a
-// very long period that also adds a Weyl generator. It also passes
-// BigCrush with no systematic failures.  Its long period may
-// be useful if you have many generators and need to avoid
-// collisions.
-// Period: 2^4128-2^32.
-// No systematic BigCrush failures reported.
-var xor4096 = __webpack_require__(48);
-
-// Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
-// number generator derived from ChaCha, a modern stream cipher.
-// https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
-// Period: ~2^127
-// No systematic BigCrush failures reported.
-var tychei = __webpack_require__(49);
-
-// The original ARC4-based prng included in this library.
-// Period: ~2^1600
-var sr = __webpack_require__(50);
-
-sr.alea = alea;
-sr.xor128 = xor128;
-sr.xorwow = xorwow;
-sr.xorshift7 = xorshift7;
-sr.xor4096 = xor4096;
-sr.tychei = tychei;
-
-module.exports = sr;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
-module.exports = __webpack_amd_options__;
-
-/* WEBPACK VAR INJECTION */}.call(exports, {}))
-
-/***/ }),
-/* 7 */,
-/* 8 */
+/***/ 124:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var seedrandom = __webpack_require__(4);
-var gaussian = __webpack_require__(20);
-function isGaussian(arg) {
-    return (arg.mean && typeof arg.mean === 'number' &&
-        arg.variance && typeof arg.variance === 'number' &&
-        arg.standardDeviation && typeof arg.standardDeviation === 'number' &&
-        arg.pdf && typeof arg.pdf === 'function' &&
-        arg.cdf && typeof arg.cdf === 'function' &&
-        arg.ppf && typeof arg.ppf === 'function' &&
-        arg.mul && typeof arg.mul === 'function' &&
-        arg.div && typeof arg.div === 'function' &&
-        arg.add && typeof arg.add === 'function' &&
-        arg.sub && typeof arg.sub === 'function' &&
-        arg.scale && typeof arg.scale === 'function');
-}
-exports.isGaussian = isGaussian;
-function randomRange(min, max, rng) {
-    if (rng === void 0) { rng = seedrandom(); }
-    return rng() * (max - min) + min;
-}
-exports.randomRange = randomRange;
-function scaledGaussian(mean, standardDeviation, rng) {
-    if (rng === void 0) { rng = seedrandom(); }
-    return gaussian(0, Math.pow(standardDeviation, 2)).ppf(rng()) + mean;
-}
-exports.scaledGaussian = scaledGaussian;
-function validateWeightedChoices(choices) {
-    var invalidWeights = choices.reduce(function (acc, choice) { return choice[0] < 0 || choice[0] > 1; }, false);
-    var weightSum = choices.reduce(function (sum, choice) { return sum + choice[0]; }, 0);
-    if (Math.abs(weightSum - 1) > 0.00001) {
-        throw new Error("Weights must sum to 1");
-    }
-    else if (invalidWeights) {
-        throw new Error("Weights must be between 0 and 1");
-    }
-}
-function weightedChoice(choices, rng) {
-    if (rng === void 0) { rng = seedrandom(); }
-    validateWeightedChoices(choices);
-    var num = rng();
-    var weightDiff = 1;
-    var res = choices[0][1];
-    for (var _i = 0, choices_1 = choices; _i < choices_1.length; _i++) {
-        var choice = choices_1[_i];
-        if (Math.abs(choice[0] - num) < weightDiff) {
-            weightDiff = Math.abs(choice[0] - num);
-            res = choice[1];
+var drawing_1 = __webpack_require__(13);
+var util_1 = __webpack_require__(8);
+var TITLE = 'Autumn';
+var DARK_BROWN = [28, 17, 28];
+var BROWN = [31, 35, 42];
+var ORANGE = [30, 87, 61];
+var YELLOW = [57, 96, 58];
+var WHITE = [150, 100, 100];
+exports.autumn = {
+    title: TITLE,
+    render: function (rng, ctx) {
+        if (ctx.canvas == null) {
+            return;
+        }
+        var numRects = util_1.scaledGaussian(500, 50, rng);
+        for (var i = 0; i < numRects; i++) {
+            var x = util_1.scaledGaussian(ctx.canvas.width * (2 / 3), 100, rng);
+            var y = util_1.scaledGaussian(ctx.canvas.height * (1 / 3), 100, rng);
+            var width = util_1.scaledGaussian(16, 2, rng);
+            var height = util_1.scaledGaussian(24, 2, rng);
+            var colors = [
+                [0.4, BROWN.slice()],
+                [0.3, ORANGE.slice()],
+                [0.2, YELLOW.slice()],
+                [0.1, WHITE.slice()]
+            ];
+            var color = util_1.weightedChoice(colors, rng);
+            drawing_1.fillHsla(ctx, color[0], color[1], color[2], 0.9, rng);
+            drawing_1.box(ctx, x, y, width, height, rng);
         }
     }
-    return res;
-}
-exports.weightedChoice = weightedChoice;
+};
 
 
 /***/ }),
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */
+
+/***/ 13:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -262,13 +134,8 @@ __export(__webpack_require__(58));
 
 
 /***/ }),
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */,
-/* 19 */,
-/* 20 */
+
+/***/ 20:
 /***/ (function(module, exports, __webpack_require__) {
 
 (function(exports) {
@@ -387,29 +254,75 @@ __export(__webpack_require__(58));
 
 
 /***/ }),
-/* 21 */,
-/* 22 */,
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
-/* 38 */,
-/* 39 */,
-/* 40 */,
-/* 41 */,
-/* 42 */,
-/* 43 */
+
+/***/ 4:
+/***/ (function(module, exports, __webpack_require__) {
+
+// A library of seedable RNGs implemented in Javascript.
+//
+// Usage:
+//
+// var seedrandom = require('seedrandom');
+// var random = seedrandom(1); // or any seed.
+// var x = random();       // 0 <= x < 1.  Every bit is random.
+// var x = random.quick(); // 0 <= x < 1.  32 bits of randomness.
+
+// alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
+// Period: ~2^116
+// Reported to pass all BigCrush tests.
+var alea = __webpack_require__(44);
+
+// xor128, a pure xor-shift generator by George Marsaglia.
+// Period: 2^128-1.
+// Reported to fail: MatrixRank and LinearComp.
+var xor128 = __webpack_require__(45);
+
+// xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
+// Period: 2^192-2^32
+// Reported to fail: CollisionOver, SimpPoker, and LinearComp.
+var xorwow = __webpack_require__(46);
+
+// xorshift7, by François Panneton and Pierre L'ecuyer, takes
+// a different approach: it adds robustness by allowing more shifts
+// than Marsaglia's original three.  It is a 7-shift generator
+// with 256 bits, that passes BigCrush with no systmatic failures.
+// Period 2^256-1.
+// No systematic BigCrush failures reported.
+var xorshift7 = __webpack_require__(47);
+
+// xor4096, by Richard Brent, is a 4096-bit xor-shift with a
+// very long period that also adds a Weyl generator. It also passes
+// BigCrush with no systematic failures.  Its long period may
+// be useful if you have many generators and need to avoid
+// collisions.
+// Period: 2^4128-2^32.
+// No systematic BigCrush failures reported.
+var xor4096 = __webpack_require__(48);
+
+// Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
+// number generator derived from ChaCha, a modern stream cipher.
+// https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
+// Period: ~2^127
+// No systematic BigCrush failures reported.
+var tychei = __webpack_require__(49);
+
+// The original ARC4-based prng included in this library.
+// Period: ~2^1600
+var sr = __webpack_require__(50);
+
+sr.alea = alea;
+sr.xor128 = xor128;
+sr.xorwow = xorwow;
+sr.xorshift7 = xorshift7;
+sr.xor4096 = xor4096;
+sr.tychei = tychei;
+
+module.exports = sr;
+
+
+/***/ }),
+
+/***/ 43:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -446,7 +359,8 @@ $title.addEventListener('input', function () { return render(ctx, layer); });
 
 
 /***/ }),
-/* 44 */
+
+/***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
@@ -568,7 +482,8 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 45 */
+
+/***/ 45:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xor128" prng algorithm by
@@ -657,7 +572,8 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 46 */
+
+/***/ 46:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorwow" prng algorithm by
@@ -751,7 +667,8 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 47 */
+
+/***/ 47:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorshift7" algorithm by
@@ -856,7 +773,8 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 48 */
+
+/***/ 48:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
@@ -1010,7 +928,8 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 49 */
+
+/***/ 49:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "Tyche-i" prng algorithm by
@@ -1121,7 +1040,37 @@ if (module && module.exports) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)(module)))
 
 /***/ }),
-/* 50 */
+
+/***/ 5:
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+
+/***/ 50:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -1375,13 +1324,15 @@ if ((typeof module) == 'object' && module.exports) {
 
 
 /***/ }),
-/* 51 */
+
+/***/ 51:
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 52 */
+
+/***/ 52:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1390,56 +1341,13 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(53));
+__export(__webpack_require__(124));
 __export(__webpack_require__(59));
 
 
 /***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var gaussian = __webpack_require__(20);
-var drawing_1 = __webpack_require__(13);
-var util_1 = __webpack_require__(8);
-var TITLE = 'Scatter';
-var NUM_CLUSTERS = gaussian(7, 4);
-var NUM_RECTS = gaussian(50, 25);
-var WIDTH = gaussian(35, 25);
-var HEIGHT = gaussian(50, 72);
-var SATURATION = gaussian(75, 100);
-var LIGHTNESS = gaussian(50, 125);
-var ALPHA = gaussian(0.5, 0.25);
-exports.boxClusters = {
-    title: TITLE,
-    render: function (rng, ctx) {
-        if (ctx.canvas == null) {
-            return;
-        }
-        var colorWeights = [
-            [0.7, [360, 65, 45, 90]],
-            [0.2, [180, 45, 65, 75]],
-            [0.1, [220, 45, 65, 75]]
-        ];
-        var numClusters = NUM_CLUSTERS.ppf(rng());
-        for (var i = 0; i < numClusters; i++) {
-            var color = util_1.weightedChoice(colorWeights, rng);
-            drawing_1.fillHsla(ctx, color[0], color[1], color[2], color[3], rng);
-            var numRects = NUM_RECTS.ppf(rng());
-            for (var j = 0; j < numRects; j++) {
-                var x = util_1.scaledGaussian(ctx.canvas.width / numClusters * (i + 1), 150, rng);
-                var y = util_1.scaledGaussian(ctx.canvas.height / 2, 200, rng);
-                drawing_1.box(ctx, x, y, WIDTH, HEIGHT, rng);
-            }
-        }
-    }
-};
-
-
-/***/ }),
-/* 54 */
+/***/ 54:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1466,7 +1374,8 @@ exports.box = function (ctx, x, y, width, height, rng) {
 
 
 /***/ }),
-/* 55 */
+
+/***/ 55:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1494,7 +1403,8 @@ exports.fillRgba = function (ctx, red, green, blue, alpha, rng) {
 
 
 /***/ }),
-/* 56 */
+
+/***/ 56:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1522,7 +1432,8 @@ exports.fillHsla = function (ctx, hue, saturation, lightness, alpha, rng) {
 
 
 /***/ }),
-/* 57 */
+
+/***/ 57:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1536,7 +1447,8 @@ exports.clear = function (ctx) {
 
 
 /***/ }),
-/* 58 */
+
+/***/ 58:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1566,7 +1478,8 @@ exports.line = function (ctx, startX, startY, endX, endY, rng) {
 
 
 /***/ }),
-/* 59 */
+
+/***/ 59:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1591,5 +1504,78 @@ exports.lines = {
 };
 
 
+/***/ }),
+
+/***/ 6:
+/***/ (function(module, exports) {
+
+/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
+module.exports = __webpack_amd_options__;
+
+/* WEBPACK VAR INJECTION */}.call(exports, {}))
+
+/***/ }),
+
+/***/ 8:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var seedrandom = __webpack_require__(4);
+var gaussian = __webpack_require__(20);
+function isGaussian(arg) {
+    return (arg.mean && typeof arg.mean === 'number' &&
+        arg.variance && typeof arg.variance === 'number' &&
+        arg.standardDeviation && typeof arg.standardDeviation === 'number' &&
+        arg.pdf && typeof arg.pdf === 'function' &&
+        arg.cdf && typeof arg.cdf === 'function' &&
+        arg.ppf && typeof arg.ppf === 'function' &&
+        arg.mul && typeof arg.mul === 'function' &&
+        arg.div && typeof arg.div === 'function' &&
+        arg.add && typeof arg.add === 'function' &&
+        arg.sub && typeof arg.sub === 'function' &&
+        arg.scale && typeof arg.scale === 'function');
+}
+exports.isGaussian = isGaussian;
+function randomRange(min, max, rng) {
+    if (rng === void 0) { rng = seedrandom(); }
+    return rng() * (max - min) + min;
+}
+exports.randomRange = randomRange;
+function scaledGaussian(mean, standardDeviation, rng) {
+    if (rng === void 0) { rng = seedrandom(); }
+    return gaussian(0, Math.pow(standardDeviation, 2)).ppf(rng()) + mean;
+}
+exports.scaledGaussian = scaledGaussian;
+function validateWeightedChoices(choices) {
+    var invalidWeights = choices.reduce(function (acc, choice) { return choice[0] < 0 || choice[0] > 1; }, false);
+    var weightSum = choices.reduce(function (sum, choice) { return sum + choice[0]; }, 0);
+    if (Math.abs(weightSum - 1) > 0.00001) {
+        throw new Error("Weights must sum to 1");
+    }
+    else if (invalidWeights) {
+        throw new Error("Weights must be between 0 and 1");
+    }
+}
+function weightedChoice(choices, rng) {
+    if (rng === void 0) { rng = seedrandom(); }
+    validateWeightedChoices(choices);
+    var num = rng();
+    for (var _i = 0, choices_1 = choices; _i < choices_1.length; _i++) {
+        var choice = choices_1[_i];
+        if (num < choice[0]) {
+            return choice[1];
+        }
+        else {
+            num -= choice[0];
+        }
+    }
+    throw new Error('Something went wrong choosing a weighted choice');
+}
+exports.weightedChoice = weightedChoice;
+
+
 /***/ })
-/******/ ]);
+
+/******/ });
