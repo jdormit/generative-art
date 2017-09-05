@@ -1,7 +1,10 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "outFile": "build/bundle.js",
+        "module": "AMD",
+        "moduleResolution": "Node"
     },
     "include": [ "src/**/*" ]
 }
